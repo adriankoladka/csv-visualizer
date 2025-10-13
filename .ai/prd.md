@@ -17,15 +17,16 @@ The CSV (Comma-Separated Values) format is a ubiquitous standard for storing and
   - A dropdown menu to select a column for the X-axis from the selected file.
   - A dropdown menu to select a column for the Y-axis from the selected file.
   - A dropdown menu to select a chart type from "Bar", "Line", or "Scatter".
-- 3.4. Visualization Generation: A Python-based backend process that:
+- 3.4. Visualization Generation: A backend process that:
   - Reads the data from the uploaded CSV file.
-  - Generates a chart image using a library like Matplotlib or Plotly based on the user's axis and chart type selections.
+  - Generates a chart image based on the user's axis and chart type selections.
 - 3.5. Chart Display and Download:
   - The generated chart image is displayed within the user's browser.
   - A "Download" button allows the user to save the generated chart as a PNG file.
-- 3.6. Logging: The application must log two specific events to a local text file for metric tracking: `chart_generated` and `chart_downloaded`.
+- 3.6. Logging: The application must log two specific events for metric tracking: `chart_generated` and `chart_downloaded`.
 - 3.7. Data Management: A server-side process for managing uploaded data on a temporary basis.
   - Users can view a list of CSV files uploaded during their current session.
+  - Users can update a file in the list by replacing it with a new one.
   - Users can delete files from this list.
   - Uploaded CSV files are stored in a temporary directory on the server only for the duration of the user's active session.
   - All temporary data associated with a session is automatically deleted upon user logout or session expiration.
@@ -37,7 +38,8 @@ The following features and functionalities are explicitly outside the scope of t
 - Interactive visualizations (e.g., tooltips on hover, zooming).
 - Generation of advanced or complex chart types (e.g., heatmaps).
 - User-defined data transformation or cleaning capabilities within the application.
-- Support for multiple simultaneous file uploads or datasets.
+- Combining data from multiple CSV files into a single visualization.
+- Support for multiple simultaneous file uploads.
 - Saving, storing, or managing previously uploaded files or generated charts for users. All user data is deleted at the end of a session.
 - Persistent storage of user data, uploaded files, or generated charts across sessions.
 
@@ -138,6 +140,14 @@ The following features and functionalities are explicitly outside the scope of t
   - When I click the "Delete" button for a specific file, that file is removed from the list and deleted from the server.
   - I receive a confirmation that the file has been deleted.
 
+- ID: US-012
+- Title: Update Uploaded File
+- Description: As a user, I want to be able to replace an uploaded CSV file with a new one, so I can correct an error or use a different dataset without starting over.
+- Acceptance Criteria:
+  - Given I can see the list of my uploaded files, there is an "Update" button next to each file name.
+  - When I click the "Update" button for a specific file, I am prompted to select a new CSV file.
+  - Upon selecting a new valid CSV file, the old file is replaced with the new one in my session list and on the server.
+  - I receive a confirmation that the file has been updated.
+
 ## 6. Success Metrics
-- Primary Success Criterion: 50% of all generated visualizations are downloaded by users.
-- Measurement: The success of the MVP will be measured by tracking two key events. The application will log `chart_generated` every time a user generates a visualization and `chart_downloaded` every time a user downloads one. The success metric will be calculated as: (Total `chart_downloaded` events / Total `chart_generated` events) >= 0.5 over a specified time period.
+The primary success criterion for the MVP is that at least 50% of all generated charts are downloaded by users. This indicates that the tool is not just being used for exploration, but is producing valuable assets for users. The application should log `chart_generated` and `chart_downloaded` events to provide the data for this metric.
