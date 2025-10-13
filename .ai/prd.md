@@ -1,22 +1,21 @@
 # Product Requirements Document (PRD) - CsvVisualizer
 
 ## 1. Product Overview
-The CsvVisualizer is a Minimum Viable Product (MVP) designed to provide a simple, web-based interface for non-technical users to generate basic data visualizations from CSV files. Users can upload a CSV file, select data columns for the X and Y axes, choose a chart type (Bar, Line, or Scatter), and generate a static chart image. All uploaded data is processed within the user's session and is not stored persistently. The application focuses on simplicity and speed, allowing users to quickly create and download visualizations for presentations or reports without needing to use complex software.
+The CsvVisualizer is a Minimum Viable Product (MVP) designed to provide a simple, web-based interface for non-technical users to generate basic data visualizations from CSV files. Users can upload one or more CSV files, manage them in a session-based list, and select a file to generate a chart. For a selected file, users can choose data columns for the X and Y axes, pick a chart type (Bar, Line, or Scatter), and generate a static chart image. All uploaded data is processed within the user's session and is not stored persistently. The application focuses on simplicity and speed, allowing users to quickly create and download visualizations for presentations or reports without needing to use complex software.
 
 ## 2. User Problem
 The CSV (Comma-Separated Values) format is a ubiquitous standard for storing and exchanging tabular data. However, in its raw text form, it is difficult for users to interpret, identify trends, or draw meaningful conclusions from the data. Existing data analysis tools are often powerful but come with a steep learning curve, making them inaccessible to users without a technical background who need to create simple visualizations quickly.
 
 ## 3. Functional Requirements
-- 3.1. File Upload: A user interface for uploading a single CSV file. The interface must clearly state the following constraints:
+- 3.1. File Upload: A user interface for uploading CSV files. Each uploaded file is added to the user's session list. The interface must clearly state the following constraints for each file:
   - Maximum file size: 1MB
   - Delimiter: Comma-separated
   - Encoding: UTF-8
   - Structure: Headers must be in the first row.
-  - A single chart type can be generated per upload.
 - 3.2. User Access Management: A system to manage user access, requiring users to log in to use the application.
-- 3.3. Chart Configuration: After a successful file upload, the user is presented with a dashboard containing:
-  - A dropdown menu to select a column for the X-axis.
-  - A dropdown menu to select a column for the Y-axis.
+- 3.3. Chart Configuration: After a file is selected from the user's session list, the user is presented with a dashboard containing:
+  - A dropdown menu to select a column for the X-axis from the selected file.
+  - A dropdown menu to select a column for the Y-axis from the selected file.
   - A dropdown menu to select a chart type from "Bar", "Line", or "Scatter".
 - 3.4. Visualization Generation: A Python-based backend process that:
   - Reads the data from the uploaded CSV file.
@@ -26,9 +25,11 @@ The CSV (Comma-Separated Values) format is a ubiquitous standard for storing and
   - A "Download" button allows the user to save the generated chart as a PNG file.
 - 3.6. Logging: The application must log two specific events to a local text file for metric tracking: `chart_generated` and `chart_downloaded`.
 - 3.7. Data Management: A server-side process for managing uploaded data on a temporary basis.
+  - Users can view a list of CSV files uploaded during their current session.
+  - Users can delete files from this list.
   - Uploaded CSV files are stored in a temporary directory on the server only for the duration of the user's active session.
   - All temporary data associated with a session is automatically deleted upon user logout or session expiration.
-  - This approach ensures that no user data is persisted long-term, aligning with the MVP's focus on single-session use.
+  - This approach allows users to manage multiple datasets within a single session without requiring long-term data persistence.
 
 ## 4. Product Boundaries
 The following features and functionalities are explicitly outside the scope of the MVP:
@@ -120,6 +121,22 @@ The following features and functionalities are explicitly outside the scope of t
   - Given I have an active session, when I upload a CSV file, it is stored in a temporary location associated with my session.
   - Given my session ends (either by logging out or timing out), the temporary location and the CSV file within it are automatically and permanently deleted.
   - The application does not persist my uploaded CSV data beyond the scope of my active session.
+
+- ID: US-010
+- Title: View Uploaded Files
+- Description: As a user, I want to see a list of all CSV files I have uploaded during my current session, so I can manage them easily.
+- Acceptance Criteria:
+  - Given I have uploaded one or more CSV files, I can see a list of these files on my dashboard.
+  - Each file in the list is identifiable by its name.
+  - This list only shows files from my current active session.
+
+- ID: US-011
+- Title: Delete Uploaded File
+- Description: As a user, I want to be able to delete a previously uploaded CSV file from my session, so I can remove irrelevant or incorrect data.
+- Acceptance Criteria:
+  - Given I can see the list of my uploaded files, there is a "Delete" button next to each file name.
+  - When I click the "Delete" button for a specific file, that file is removed from the list and deleted from the server.
+  - I receive a confirmation that the file has been deleted.
 
 ## 6. Success Metrics
 - Primary Success Criterion: 50% of all generated visualizations are downloaded by users.
