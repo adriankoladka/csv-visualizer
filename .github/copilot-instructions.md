@@ -69,6 +69,12 @@ Returns:
 
 - pandas version used in this project is 2.3.3.
 
+- Follow method chaining pattern when interacting with pandas DataFrames.
+
+- During pandas DataFrame creation, always use appropriate data types for each column to optimize memory consumption.
+
+- Instead of using loops to iterate over DataFrame rows, utilize pandas vectorized operations for better performance.
+
 #### MATPLOTLIB
 
 - matplotlib version used in this project is 3.10.7.
