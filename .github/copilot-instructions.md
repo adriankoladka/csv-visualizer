@@ -55,6 +55,10 @@ Returns:
 
 - pip version used in this project is 24.2.
 
+- To deal with confidential information, use python-dotenv package to load environment variables from a .env file. python-dotenv version used in this project is 1.1.1.
+
+- To deal with dependencies, use existing virtual environment - csvviz - and requirements.txt file.
+
 #### FLASK
 
 - Flask version used in this project is 3.1.2.
@@ -83,8 +87,8 @@ Returns:
 
 - Extract common steps into composite actions in separate files.
 
-## TESTING
+### Guidelines for testing
 
-### Guidelines for PYTEST
+#### PYTEST
 
 - pytest version used in this project is 8.4.2.
