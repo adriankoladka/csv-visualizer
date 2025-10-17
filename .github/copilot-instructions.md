@@ -79,6 +79,16 @@ Returns:
 
 - matplotlib version used in this project is 3.10.7.
 
+- During chart creation, use grey as the base color for bars on bar charts, lines on line charts and dots. on scatter plots. Then, use different, single color only to highlight data points which seem the most important. An example of such data point would be the highest value in the dataset coming from user-uploaded CSV file.
+
+- Do not use 3D charts.
+
+- Make sure axis scales are consistent.
+
+- Always add labels to axes and a title to the chart. The title should be derived from CSV file's name.
+
+- The charts generated in this project are static.
+
 ## FRONTEND
 
 ### Guidelines for JINJA2
