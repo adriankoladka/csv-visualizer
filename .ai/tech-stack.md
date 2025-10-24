@@ -15,3 +15,4 @@ Jinja2
 
 ## CI/CD
 GitHub Actions
+pytest
