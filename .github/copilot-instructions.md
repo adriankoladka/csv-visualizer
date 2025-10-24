@@ -108,3 +108,5 @@ Returns:
 #### PYTEST
 
 - pytest version used in this project is 8.4.2.
+- Each test case's name must start with test_.
+- Each module containing test cases must be created in CSVVIZ\csv-visualizer\tests.
