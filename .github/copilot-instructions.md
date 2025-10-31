@@ -65,6 +65,16 @@ Returns:
 
 - Flask-Login version used in this project is 0.6.3.
 
+- Use application factory pattern to create Flask application instance: goal is to make the testing easier.
+
+- Use blueprints to organize the application structure into modules.
+
+- Centralize configuration in a config.py file.
+
+- Implement user feedback using Flask's flash() messaging system. 
+
+- Reflect the distinction between authenticated and unauthenticated users in the application.
+
 #### PANDAS
 
 - pandas version used in this project is 2.3.3.
@@ -95,6 +105,12 @@ Returns:
 
 - Jinja2 version used in this project is 3.1.6.
 
+- Create a base.html template containing the common HTML structure to support template inheritance.
+
+- Use url_for() and never hardcode URLs in the templates.
+
+- Use Jinja2 control structures like {% if %} to dynamically generate content.
+
 ## DEVOPS
 
 ### Guidelines for CI/CD
@@ -103,10 +119,30 @@ Returns:
 
 - Extract common steps into composite actions in separate files.
 
+- Cache the dependencies using cache option in actions/setup-python action.
+
+- Use single workflow file for the entire project and store it in .github/workflows directory. Name the workflow file python-csvviz-app.yml.
+
+- The workflow must contain 2 jobs at minimum: build and test.
+
+- build job's steps should use Flake8 for linting and Mypy for type checking.
+
+- test job must depend on build job. Its steps will be based on pytest.
+
+- Use ubuntu-latest as the runner for each job.
+
+- Install dependencies from requirements.txt file using pip.
+
 ### Guidelines for testing
 
 #### PYTEST
 
 - pytest version used in this project is 8.4.2.
+
 - Each test case's name must start with test_.
+
 - Each module containing test cases must be created in CSVVIZ\csv-visualizer\tests.
+
+- Use fixtures to avoid code duplication and place them in conftest.py file to enable sharing across multiple test modules.
+
+- Use markers to categorize tests.
