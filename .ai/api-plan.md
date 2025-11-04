@@ -18,14 +18,14 @@ This document outlines the REST API for the CsvVisualizer application, designed 
 -   **JSON Request Payload**:
     ```json
     {
-      "username": "user@example.com",
-      "password": "securepassword123"
+      "username": "string",
+      "password": "string"
     }
     ```
 -   **JSON Response Payload**:
     ```json
     {
-      "message": "Login successful."
+      "message": "string"
     }
     ```
 -   **Success Codes**: `200 OK`
@@ -37,7 +37,7 @@ This document outlines the REST API for the CsvVisualizer application, designed 
 -   **JSON Response Payload**:
     ```json
     {
-      "message": "Logout successful."
+      "message": "string"
     }
     ```
 -   **Success Codes**: `200 OK`
@@ -53,14 +53,9 @@ This document outlines the REST API for the CsvVisualizer application, designed 
     {
       "files": [
         {
-          "id": "file_1",
-          "original_filename": "sales_data_q1.csv",
-          "columns": ["Date", "Region", "Sales", "Units"]
-        },
-        {
-          "id": "file_2",
-          "original_filename": "customer_feedback.csv",
-          "columns": ["CustomerID", "Rating", "Comment"]
+          "id": "string",
+          "original_filename": "string",
+          "columns": ["string"]
         }
       ]
     }
@@ -75,11 +70,11 @@ This document outlines the REST API for the CsvVisualizer application, designed 
 -   **JSON Response Payload**:
     ```json
     {
-      "message": "File uploaded successfully.",
+      "message": "string",
       "file": {
-        "id": "file_3",
-        "original_filename": "new_data.csv",
-        "columns": ["ID", "Value", "Category"]
+        "id": "string",
+        "original_filename": "string",
+        "columns": ["string"]
       }
     }
     ```
@@ -93,11 +88,11 @@ This document outlines the REST API for the CsvVisualizer application, designed 
 -   **JSON Response Payload**:
     ```json
     {
-      "message": "File updated successfully.",
+      "message": "string",
       "file": {
-        "id": "file_1",
-        "original_filename": "updated_sales.csv",
-        "columns": ["Date", "Region", "Revenue"]
+        "id": "string",
+        "original_filename": "string",
+        "columns": ["string"]
       }
     }
     ```
@@ -110,7 +105,7 @@ This document outlines the REST API for the CsvVisualizer application, designed 
 -   **JSON Response Payload**:
     ```json
     {
-      "message": "File deleted successfully."
+      "message": "string"
     }
     ```
 -   **Success Codes**: `200 OK`
@@ -124,17 +119,17 @@ This document outlines the REST API for the CsvVisualizer application, designed 
 -   **JSON Request Payload**:
     ```json
     {
-      "file_id": "file_1",
-      "x_axis": "Region",
-      "y_axis": "Sales",
-      "chart_type": "Bar"
+      "file_id": "string",
+      "x_axis": "string",
+      "y_axis": "string",
+      "chart_type": "string"
     }
     ```
 -   **JSON Response Payload**:
     ```json
     {
-      "chart_url": "/api/v1/charts/generated_chart.png",
-      "download_url": "/api/v1/charts/generated_chart.png?download=true"
+      "chart_url": "string",
+      "download_url": "string"
     }
     ```
 -   **Success Codes**: `201 Created`
