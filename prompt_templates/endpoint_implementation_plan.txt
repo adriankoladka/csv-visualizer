@@ -50,7 +50,6 @@ Throughout the plan, ensure that you:
 
 The final output should be a well-organized implementation plan in markdown format. Here's an example of what the output should look like:
 
-``markdown
 # API Endpoint Implementation Plan: [Endpoint Name]
 
 ## 1. Endpoint Overview
@@ -86,8 +85,8 @@ The final output should be a well-organized implementation plan in markdown form
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
-...
-```
+n. [Step n]
+
 
 The final output should consist solely of the implementation plan in markdown format and should not duplicate or repeat any work done in the analysis section.
 
