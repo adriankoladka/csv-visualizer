@@ -17,6 +17,8 @@ Before we begin, review the following information:
 {{tech-stack}} <- replace with reference to #tech-stack.md
 </tech_stack>
 
+4. If applicable, implementation plans for other endpoints you can find in .ai\endpoint_implementation_plans.
+
 Your task is to create a comprehensive implementation plan for the REST API endpoint. Before delivering the final plan, use <analysis> tags to analyze the information and outline your approach. In this analysis, ensure that you:
 
 1. Summarize key points of the API specification.
