@@ -92,4 +92,4 @@ n. [Step n]
 
 The final output should consist solely of the implementation plan in markdown format and should not duplicate or repeat any work done in the analysis section.
 
-Remember to save your implementation plan as .ai/endpoint_implementation_plans/{{endpoint-name}}.md. Ensure the plan is detailed, clear, and provides comprehensive guidance for the development team.
+Remember to save your implementation plan as .ai/endpoint_implementation_plans/{{endpoint-name}}-implementation-plan.md. Ensure the plan is detailed, clear, and provides comprehensive guidance for the development team.
