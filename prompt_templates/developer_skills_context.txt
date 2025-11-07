@@ -1,0 +1,2 @@
+In your responses, always take into account that I am a data engineer who is familiar with Python, but I have never developed a web application before.
+I went through a few basic learning materials, mostly 'Flask Mega Tutorial' by Miguel Grinberg.
