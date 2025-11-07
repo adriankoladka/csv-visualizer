@@ -24,21 +24,17 @@ When modifying the directory structure, always update this section.
 
 - Always use type hints when functions and methods are defined.
 
-- For classes, always add docstrings. The docstrings must follow below format (exclude short_description tags):
+- For classes, always add docstrings. The docstrings must follow below format:
 ```
 """
-<short_description>
 Brief explanation of the class.
-</short_description>
 """
 ```
 
-- For functions and methods, always add docstrings. The docstrings must follow below format (exclude short_description tags):
+- For functions and methods, always add docstrings. The docstrings must follow below format:
 ```
 """
-<short_description>
 Brief explanation of the class/function/method.
-</short_description>
 Args:
     <arg_name> (<arg_type>): <description>
     ...

@@ -1,6 +1,7 @@
 # Directories
 .pytest_cache/
 csvviz/
+instance/
 tests/__pycache__/
 # Files
 .env
