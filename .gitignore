@@ -1,5 +1,8 @@
 # Directories
+__pycache__/
 .pytest_cache/
+app/__pycache__/
+app/auth/__pycache__/
 csvviz/
 instance/
 tests/__pycache__/
