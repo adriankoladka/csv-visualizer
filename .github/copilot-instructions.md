@@ -3,6 +3,21 @@
 This project is a simple web application that allows users to generate basic data visualizations from CSV files. 
 It is built using Python: Flask, Pandas, Matplotlib and Jinja2.
 
+## PROJECT STRUCTURE
+
+When introducing changes to the project, always follow the directory structure below:
+
+app/
+├── __init__.py
+├── api/
+├── auth/
+├── services/
+├── static/
+└── templates/
+instance/
+
+When modifying the directory structure, always update this section.
+
 ## BACKEND
 
 ### Guidelines for PYTHON
@@ -58,6 +73,8 @@ Returns:
 - To deal with confidential information, use python-dotenv package to load environment variables from a .env file. python-dotenv version used in this project is 1.1.1.
 
 - To deal with dependencies, use existing virtual environment - csvviz - and requirements.txt file.
+
+- Before coding, always make sure to activate existing virtual environment - csvviz - and deactivate it after work is completed.
 
 #### FLASK
 
