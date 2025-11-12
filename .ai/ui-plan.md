@@ -8,7 +8,14 @@ The core user experience is centered on a single-page dashboard that provides ac
 
 ## 2. View List
 
-### a. Base Template
+### a. Root Route
+- **View Path**: `/`
+- **Main Purpose**: To act as a smart entry point, directing users to the appropriate page based on their authentication status.
+- **Logic**:
+    - If the user is authenticated (`current_user.is_authenticated`), redirect to `/dashboard`.
+    - If the user is not authenticated, redirect to `/login`.
+
+### b. Base Template
 
 -   **View Name**: `base.html`
 -   **Main Purpose**: To provide a consistent HTML structure, header, and styling foundation for all other views.
@@ -17,13 +24,13 @@ The core user experience is centered on a single-page dashboard that provides ac
     -   A conditional "Logout" link, visible only to authenticated users.
 -   **Key View Components**:
     -   **Header**: Contains the application title.
-    -   **Logout Link**: A link that directs the user to the `POST /api/v1/users/logout` endpoint, terminating their session.
+    -   **Logout Link**: A link that directs the user to the `/logout` route, terminating their session.
     -   **Content Block**: A Jinja2 block where child templates (`login.html`, `dashboard.html`) will inject their specific content.
 
-### b. Login View
+### c. Login View
 
 -   **View Name**: `login.html`
--   **View Path**: `/` (or `/login`)
+-   **View Path**: `/login`
 -   **Main Purpose**: To authenticate users before granting access to the application's core features.
 -   **Key Information to Display**:
     -   Application title ("CsvVisualizer").
@@ -31,12 +38,12 @@ The core user experience is centered on a single-page dashboard that provides ac
     -   A "Login" button.
     -   Error messages (e.g., "Invalid credentials") via Flask's flash messaging system.
 -   **Key View Components**:
-    -   **Login Form**: A simple form that submits user credentials to the `POST /api/v1/users/login` endpoint.
+    -   **Login Form**: A simple form that submits user credentials to the `/login` route.
 -   **UX and Security Considerations**:
     -   **UX**: The view is clean and focused, presenting only the necessary elements for login. Feedback on success or failure is immediate.
     -   **Security**: The form should submit credentials over HTTPS. The actual authentication logic and session management are handled by the backend (Flask-Login), keeping the frontend secure.
 
-### c. Dashboard View
+### d. Dashboard View
 
 -   **View Name**: `dashboard.html`
 -   **View Path**: `/dashboard`
@@ -52,14 +59,14 @@ The core user experience is centered on a single-page dashboard that provides ac
         -   The generated chart image.
         -   A "Download" button for the generated chart.
 -   **Key View Components**:
-    -   **File Upload Form**: A `multipart/form-data` form for uploading CSV files to the `POST /api/v1/files` endpoint.
+    -   **File Upload Form**: A `multipart/form-data` form for uploading CSV files, which will be handled by a dedicated view function (e.g., `/upload`).
     -   **Session File List**: A dynamically generated list of uploaded files. Each file entry includes its name and "Update" and "Delete" buttons. The file name is a link that reloads the dashboard with that file selected for charting (e.g., `/dashboard?file_id=<file_id>`).
-    -   **Chart Configuration Form**: A form containing dropdowns for X-axis, Y-axis, and chart type. It submits to the `POST /api/v1/charts` endpoint.
-    -   **Chart Display Area**: An `<img>` tag that displays the generated chart by linking to its URL (e.g., `/api/v1/charts/<chart_filename>`).
-    -   **Download Button**: A link pointing to the chart download endpoint (`GET /api/v1/charts/<chart_filename>?download=true`).
+    -   **Chart Configuration Form**: A form containing dropdowns for X-axis, Y-axis, and chart type. It will submit to a dedicated view function (e.g., `/generate-chart`).
+    -   **Chart Display Area**: An `<img>` tag that displays the generated chart by linking to its URL (e.g., `/charts/<chart_filename>`).
+    -   **Download Button**: A link pointing to the chart download route (e.g., `/charts/<chart_filename>?download=true`).
 -   **UX and Security Considerations**:
     -   **UX**: The two-column layout keeps file management and chart configuration visible simultaneously. Using URL query parameters to manage the selected file state allows for bookmarking and predictable reloads. A loading indicator will provide feedback during chart generation.
-    -   **Security**: All actions are protected by the backend's session management. The UI simply provides the interface to trigger authenticated API endpoints.
+    -   **Security**: All actions are protected by the backend's session management. The UI provides the interface for submitting forms to authenticated routes.
 
 ## 3. User Journey Map
 

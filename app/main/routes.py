@@ -2,10 +2,21 @@
 Defines the main routes of the application.
 """
 
-from flask import render_template
-from flask_login import login_required
+from flask import redirect, render_template, url_for
+from flask_login import current_user, login_required
 
 from app.main import main_bp
+
+
+@main_bp.route("/")
+def index():
+    """
+    Redirects to the dashboard if the user is logged in,
+    otherwise to the login page.
+    """
+    if current_user.is_authenticated:
+        return redirect(url_for("main.dashboard"))
+    return redirect(url_for("auth.login"))
 
 
 @main_bp.route("/dashboard")
