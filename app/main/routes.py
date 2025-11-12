@@ -2,7 +2,7 @@
 Defines the main routes of the application.
 """
 
-from flask import redirect, render_template, url_for
+from flask import redirect, render_template, session, url_for
 from flask_login import current_user, login_required
 
 from app.main import main_bp
@@ -23,6 +23,7 @@ def index():
 @login_required
 def dashboard():
     """
-    Renders the main dashboard page.
+    Renders the main dashboard page, displaying uploaded files.
     """
-    return render_template("dashboard.html")
+    uploaded_files = session.get("uploaded_files", {})
+    return render_template("dashboard.html", files=uploaded_files)

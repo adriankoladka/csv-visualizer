@@ -86,6 +86,8 @@ Returns:
 
 - Implement user feedback using Flask's flash() messaging system. 
 
+- Use Post/Redirect/Get (PRG) pattern for all form submissions to prevent duplicate form submissions on page refresh.
+
 - Reflect the distinction between authenticated and unauthenticated users in the application.
 
 #### PANDAS
