@@ -11,6 +11,7 @@ app/
 ├── __init__.py
 ├── api/
 ├── auth/
+├── main/
 ├── services/
 ├── static/
 └── templates/
