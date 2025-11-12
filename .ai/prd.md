@@ -23,7 +23,7 @@ The CSV (Comma-Separated Values) format is a ubiquitous standard for storing and
 - 3.5. Chart Display and Download:
   - The generated chart image is displayed within the user's browser.
   - A "Download" button allows the user to save the generated chart as a PNG file.
-- 3.6. Logging: The application must log two specific events for metric tracking: `chart_generated` and `chart_downloaded`.
+- 3.6. Logging: The application must log two specific events for metric tracking: `chart_generated` and `chart_downloaded`. These events must be written to a dedicated log file in a structured format suitable for post-hoc application success evaluation.
 - 3.7. Data Management: A server-side process for managing uploaded data on a temporary basis.
   - Users can view a list of CSV files uploaded during their current session.
   - Users can update a file in the list by replacing it with a new one.

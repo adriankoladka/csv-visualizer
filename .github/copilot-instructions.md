@@ -20,7 +20,7 @@ When modifying the directory structure, always update this section.
 
 ## BACKEND
 
-### Guidelines for PYTHON
+### PYTHON
 
 - Always use type hints when functions and methods are defined.
 
@@ -62,7 +62,7 @@ Returns:
 
 - Each time you create or update a file, use black package to format the code in line with PEP 8 guidelines. Do this by executing the command black {source_file_or_directory}.
 
-- Python version used in this project is 3.13.0.
+- Python version used in this project is 3.11.9.
 
 - pip version used in this project is 24.2.
 
@@ -72,7 +72,7 @@ Returns:
 
 - Before coding, always make sure to activate existing virtual environment - csvviz - and deactivate it after work is completed.
 
-#### FLASK
+### FLASK
 
 - Flask version used in this project is 3.1.2.
 
@@ -86,11 +86,13 @@ Returns:
 
 - Implement user feedback using Flask's flash() messaging system. 
 
+- Implement business event logging using Python's standard `logging` module. Critical events are `chart_generated` and `chart_downloaded`. These events must be written to a file named `events.log` located in the `instance` directory. Each log entry must be a JSON object containing only the `timestamp` and `event_type` keys.
+
 - Use Post/Redirect/Get (PRG) pattern for all form submissions to prevent duplicate form submissions on page refresh.
 
 - Reflect the distinction between authenticated and unauthenticated users in the application.
 
-#### PANDAS
+### PANDAS
 
 - pandas version used in this project is 2.3.3.
 
@@ -100,11 +102,11 @@ Returns:
 
 - Instead of using loops to iterate over DataFrame rows, utilize pandas vectorized operations for better performance.
 
-#### MATPLOTLIB
+### MATPLOTLIB
 
 - matplotlib version used in this project is 3.10.7.
 
-- During chart creation, use grey as the base color for bars on bar charts, lines on line charts and dots. on scatter plots. Then, use different, single color only to highlight data points which seem the most important. An example of such data point would be the highest value in the dataset coming from user-uploaded CSV file.
+- During chart creation, use grey as the base color for bars on bar charts, lines on line charts and dots. on scatter plots. Then, use different, single color only to highlight most important data points. The most important data point is defined as the one with the maximum value on the Y-axis. This point (or bar) should be highlighted with a distinct color, while all other data points use a base grey color.
 
 - Do not use 3D charts.
 
@@ -116,7 +118,7 @@ Returns:
 
 ## FRONTEND
 
-### Guidelines for JINJA2
+### JINJA2
 
 - Jinja2 version used in this project is 3.1.6.
 
@@ -126,11 +128,12 @@ Returns:
 
 - Use Jinja2 control structures like {% if %} to dynamically generate content.
 
-## DEVOPS
+### JAVASCRIPT
+- Use minimal, embedded JavaScript directly within Jinja2 templates for simple UX enhancements (e.g., showing a 'loading' message). Do not create separate .js files or introduce a frontend build process to maintain simplicity.
 
-### Guidelines for CI/CD
+## CI/CD
 
-#### GITHUB_ACTIONS
+### GITHUB ACTIONS
 
 - Extract common steps into composite actions in separate files.
 
@@ -148,9 +151,9 @@ Returns:
 
 - Install dependencies from requirements.txt file using pip.
 
-### Guidelines for testing
+## TESTING
 
-#### PYTEST
+### PYTEST
 
 - pytest version used in this project is 8.4.2.
 

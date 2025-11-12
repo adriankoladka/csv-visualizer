@@ -46,7 +46,7 @@ The session will store:
 }
 ```
 
-A limit of **5 files per session** will be enforced at the application level to prevent resource exhaustion.
+A limit of **5 files per session uploaded sequentially** will be enforced at the application level to prevent resource exhaustion.
 
 ## 4. Core Components
 
@@ -70,7 +70,7 @@ A set of utility functions will be created to manage file and directory operatio
 -   **Workflow**:
     1.  The user submits a file via an HTML form on the dashboard.
     2.  The application checks if the session file limit (5) has been reached. If so, flash an error message.
-    3.  The file is read into memory to validate its format (CSV, UTF-8 encoding) using the `is_valid_csv` helper. An error is flashed if validation fails.
+    3.  The file is read into memory to validate its format (CSV, UTF-8 encoding) using the `is_valid_csv` helper. An error is flashed if validation fails. The validation process must confirm that the file has a header row. An upload will be rejected if the file lacks a proper header.
     4.  The user-provided filename is sanitized using `werkzeug.utils.secure_filename()`.
     5.  The `get_session_dir()` helper is called to get/create the unique session directory.
     6.  The file is saved to the session directory.
