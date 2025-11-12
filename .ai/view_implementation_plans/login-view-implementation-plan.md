@@ -18,8 +18,6 @@ This document outlines the implementation plan for the `login.html` view. This v
 *   **View Function:** The view and its logic are handled by the `login()` function located in `app/auth/routes.py`.
 *   **URL:** The route is accessible at the `/login` URL.
 *   **HTTP Methods:** The route is configured to accept both `GET` and `POST` requests.
-    *   A `GET` request is used to display the login page.
-    *   A `POST` request is used to process the submitted login credentials.
 
 ## 4. Backend Logic
 The logic is split based on the HTTP request method.

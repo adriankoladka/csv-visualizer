@@ -8,7 +8,14 @@ The core user experience is centered on a single-page dashboard that provides ac
 
 ## 2. View List
 
-### a. Base Template
+### a. Root Route
+- **View Path**: `/`
+- **Main Purpose**: To act as a smart entry point, directing users to the appropriate page based on their authentication status.
+- **Logic**:
+    - If the user is authenticated (`current_user.is_authenticated`), redirect to `/dashboard`.
+    - If the user is not authenticated, redirect to `/login`.
+
+### b. Base Template
 
 -   **View Name**: `base.html`
 -   **Main Purpose**: To provide a consistent HTML structure, header, and styling foundation for all other views.
@@ -20,10 +27,10 @@ The core user experience is centered on a single-page dashboard that provides ac
     -   **Logout Link**: A link that directs the user to the `POST /api/v1/users/logout` endpoint, terminating their session.
     -   **Content Block**: A Jinja2 block where child templates (`login.html`, `dashboard.html`) will inject their specific content.
 
-### b. Login View
+### c. Login View
 
 -   **View Name**: `login.html`
--   **View Path**: `/` (or `/login`)
+-   **View Path**: `/login`
 -   **Main Purpose**: To authenticate users before granting access to the application's core features.
 -   **Key Information to Display**:
     -   Application title ("CsvVisualizer").
@@ -36,7 +43,7 @@ The core user experience is centered on a single-page dashboard that provides ac
     -   **UX**: The view is clean and focused, presenting only the necessary elements for login. Feedback on success or failure is immediate.
     -   **Security**: The form should submit credentials over HTTPS. The actual authentication logic and session management are handled by the backend (Flask-Login), keeping the frontend secure.
 
-### c. Dashboard View
+### d. Dashboard View
 
 -   **View Name**: `dashboard.html`
 -   **View Path**: `/dashboard`
