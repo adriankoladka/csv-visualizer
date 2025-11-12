@@ -8,7 +8,19 @@ The core user experience is centered on a single-page dashboard that provides ac
 
 ## 2. View List
 
-### a. Login View
+### a. Base Template
+
+-   **View Name**: `base.html`
+-   **Main Purpose**: To provide a consistent HTML structure, header, and styling foundation for all other views.
+-   **Key Information to Display**:
+    -   Application title in the header.
+    -   A conditional "Logout" link, visible only to authenticated users.
+-   **Key View Components**:
+    -   **Header**: Contains the application title.
+    -   **Logout Link**: A link that directs the user to the `POST /api/v1/users/logout` endpoint, terminating their session.
+    -   **Content Block**: A Jinja2 block where child templates (`login.html`, `dashboard.html`) will inject their specific content.
+
+### b. Login View
 
 -   **View Name**: `login.html`
 -   **View Path**: `/` (or `/login`)
@@ -24,7 +36,7 @@ The core user experience is centered on a single-page dashboard that provides ac
     -   **UX**: The view is clean and focused, presenting only the necessary elements for login. Feedback on success or failure is immediate.
     -   **Security**: The form should submit credentials over HTTPS. The actual authentication logic and session management are handled by the backend (Flask-Login), keeping the frontend secure.
 
-### b. Dashboard View
+### c. Dashboard View
 
 -   **View Name**: `dashboard.html`
 -   **View Path**: `/dashboard`
@@ -48,18 +60,6 @@ The core user experience is centered on a single-page dashboard that provides ac
 -   **UX and Security Considerations**:
     -   **UX**: The two-column layout keeps file management and chart configuration visible simultaneously. Using URL query parameters to manage the selected file state allows for bookmarking and predictable reloads. A loading indicator will provide feedback during chart generation.
     -   **Security**: All actions are protected by the backend's session management. The UI simply provides the interface to trigger authenticated API endpoints.
-
-### c. Base Template
-
--   **View Name**: `base.html`
--   **Main Purpose**: To provide a consistent HTML structure, header, and styling foundation for all other views.
--   **Key Information to Display**:
-    -   Application title in the header.
-    -   A conditional "Logout" link, visible only to authenticated users.
--   **Key View Components**:
-    -   **Header**: Contains the application title.
-    -   **Logout Link**: A link that directs the user to the `POST /api/v1/users/logout` endpoint, terminating their session.
-    -   **Content Block**: A Jinja2 block where child templates (`login.html`, `dashboard.html`) will inject their specific content.
 
 ## 3. User Journey Map
 

@@ -1,10 +1,11 @@
 """
 Initializes the Flask application and its components.
 """
+
 import os
 from typing import Type
 
-from flask import Flask, jsonify
+from flask import Flask, flash, jsonify, redirect, url_for
 from flask_login import LoginManager
 
 from config import Config
@@ -32,9 +33,10 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     @login_manager.unauthorized_handler
     def unauthorized():
         """
-        Handles unauthorized access for API endpoints.
+        Handles unauthorized access by redirecting to the login page.
         """
-        return jsonify({"message": "Authentication required."}), 401
+        flash("You must be logged in to view this page.")
+        return redirect(url_for("auth.login"))
 
     from app.auth.models import get_user
 
@@ -48,6 +50,10 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     # Register blueprints
     from app.auth import auth_bp
 
-    app.register_blueprint(auth_bp, url_prefix="/api/v1")
+    app.register_blueprint(auth_bp)
+
+    from app.main import main_bp
+
+    app.register_blueprint(main_bp)
 
     return app
