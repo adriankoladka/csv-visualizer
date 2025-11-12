@@ -50,15 +50,9 @@ A limit of **5 files per session** will be enforced at the application level to 
 
 ## 4. Core Components
 
-### Data Management Blueprint (`data_bp`)
+### Data Management Routes
 
-All data management logic will be encapsulated within a dedicated Flask blueprint to ensure modularity and separation of concerns.
-
--   **Blueprint Name**: `data`
--   **URL Prefix**: `/data`
--   **Responsibilities**:
-    -   Handle file uploads, deletions, and updates.
-    -   Provide endpoints for retrieving the list of uploaded files.
+All data management logic will be handled by view functions, likely within the `main` blueprint, to ensure modularity. These view functions will be responsible for handling form submissions for file uploads, deletions, and updates.
 
 ### Helper Functions
 
@@ -72,43 +66,43 @@ A set of utility functions will be created to manage file and directory operatio
 
 ### 5.1. File Upload
 
--   **Route**: `POST /data/upload`
+-   **Route**: A `POST` request to a route like `/upload`. This will be handled by a view function.
 -   **Workflow**:
-    1.  The user submits a file via a form.
-    2.  The application checks if the session file limit (5) has been reached. If so, return an error.
-    3.  The file is read into memory to validate its format (CSV, UTF-8 encoding) using the `is_valid_csv` helper. An error is returned if validation fails.
+    1.  The user submits a file via an HTML form on the dashboard.
+    2.  The application checks if the session file limit (5) has been reached. If so, flash an error message.
+    3.  The file is read into memory to validate its format (CSV, UTF-8 encoding) using the `is_valid_csv` helper. An error is flashed if validation fails.
     4.  The user-provided filename is sanitized using `werkzeug.utils.secure_filename()`.
     5.  The `get_session_dir()` helper is called to get/create the unique session directory.
     6.  The file is saved to the session directory.
     7.  A new file entry (dictionary) is added to the `session['files']` list.
-    8.  The user is redirected to the dashboard, where the new file will appear in the list.
+    8.  The user is redirected back to the dashboard, where the page will reload to show the new file in the list.
 
 ### 5.2. File Deletion
 
--   **Route**: `POST /data/delete/<file_id>`
+-   **Route**: A `POST` request to a route like `/delete_file/<file_id>`.
 -   **Workflow**:
-    1.  The user clicks a "Delete" button, triggering a request to this endpoint with the unique `file_id`.
+    1.  The user clicks a "Delete" button within a form, triggering a `POST` request to this endpoint with the unique `file_id`.
     2.  The application finds the file's metadata in `session['files']` using the `file_id`.
     3.  The physical file is deleted from the server using `os.remove()`.
     4.  The corresponding entry is removed from the `session['files']` list.
-    5.  A confirmation message is flashed to the user.
+    5.  A confirmation message is flashed to the user, and they are redirected back to the dashboard.
 
 ### 5.3. File Update
 
--   **Route**: `POST /data/update/<file_id>`
+-   **Route**: A `POST` request to a route like `/update_file/<file_id>`.
 -   **Workflow**:
-    1.  The user clicks an "Update" button, which opens a file dialog. Upon selection, a form is submitted to this endpoint.
+    1.  The user clicks an "Update" button, which triggers a form submission with the new file to this endpoint.
     2.  The new file is validated just like in the upload process.
     3.  The application finds the old file's metadata in `session['files']`.
     4.  The old physical file is deleted from the server.
     5.  The new file is saved to the session directory (potentially with a new sanitized name).
     6.  The entry in `session['files']` is updated with the new `original_filename` and `server_path`.
-    7.  A confirmation message is flashed to the user.
+    7.  A confirmation message is flashed, and the user is redirected back to the dashboard.
 
 ### 5.4. File List Display
 
--   There is no dedicated route for this. The list of files will be retrieved directly from `session.get('files', [])` within the main dashboard/chart configuration route.
--   The template will iterate through this list to display the files, along with "Delete" and "Update" buttons for each.
+-   There is no dedicated route for this. The list of files will be retrieved directly from `session.get('files', [])` within the main dashboard view function.
+-   The `dashboard.html` template will iterate through this list to display the files, along with "Delete" and "Update" buttons for each.
 
 ## 6. Session Management and Data Cleanup
 
