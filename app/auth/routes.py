@@ -1,50 +1,45 @@
 """
 Defines the routes for authentication.
 """
-from flask import Response, jsonify, request
+
+from flask import Response, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 
 from app.auth import auth_bp
 from app.auth.services import authenticate_user
 
 
-@auth_bp.route("/users/login", methods=["POST"])
-def login() -> Response:
+@auth_bp.route("/login", methods=["GET", "POST"])
+def login() -> Response | str:
     """
     Authenticates a user and starts a session.
     """
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"message": "Request body must be JSON."}), 400
-
-        username = data.get("username")
-        password = data.get("password")
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if not username or not password:
-            return (
-                jsonify({"message": "Username and password are required."}),
-                400,
-            )
+            flash("Username and password are required.")
+            return redirect(url_for("auth.login"))
 
         user = authenticate_user(username, password)
 
         if user:
             login_user(user)
-            return jsonify({"message": "Login successful."}), 200
+            return redirect(url_for("main.dashboard"))
         else:
-            return jsonify({"message": "Invalid credentials."}), 401
+            flash("Invalid credentials.")
+            return redirect(url_for("auth.login"))
 
-    except Exception:
-        # In a real app, you would log this error.
-        return jsonify({"message": "An internal server error occurred."}), 500
+    return render_template("auth/login.html")
 
 
-@auth_bp.route("/users/logout", methods=["POST"])
+@auth_bp.route("/logout")
 @login_required
 def logout() -> Response:
     """
     Logs out the current user and ends the session.
     """
     logout_user()
-    return jsonify({"message": "You have been successfully logged out."}), 200
+    flash("You have been successfully logged out.")
+    return redirect(url_for("auth.login"))

@@ -1,6 +1,7 @@
 """
 Contains the business logic for authentication.
 """
+
 from app.auth.models import User, get_user_by_username
 
 
