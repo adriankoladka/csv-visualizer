@@ -1,8 +1,9 @@
 Your task is to implement {{feature}} based on the context added to the conversation.
 First, carefully review the context.
 Second, carefully review the project structure and existing code. 
-Pay special attention to the content of app directory in the project root and do not miss already prepared .py files.
-For example, do not forget to review the code in app\auth\models.py.
+This means that you must inspect every file you can find in the project which is relevant for implementation of {{feature}}
+Pay special attention to .py files.
+Do not assume upfront that a file is incomplete or that it acts as a placeholder - this is not always the case.
 Third, start implementation, following the approach defined below.
 
 <implementation_approach>
