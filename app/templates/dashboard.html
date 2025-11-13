@@ -74,7 +74,7 @@
         
         {% if active_file %}
             <!-- Chart Configuration Form -->
-            <form action="" method="post">
+            <form action="{{ url_for('main.generate_chart') }}" method="post">
                 <input type="hidden" name="file_id" value="{{ active_file.id }}">
                 
                 <label for="x_axis">X-Axis:</label>
@@ -103,7 +103,15 @@
 
             <!-- Chart Display Area -->
             <div class="chart-display">
-                <p>Chart will be displayed here.</p>
+                {% if session.chart_filename %}
+                    <img src="{{ url_for('main.get_chart', filename=session.chart_filename) }}" alt="Generated Chart">
+                    <br>
+                    <a href="{{ url_for('main.get_chart', filename=session.chart_filename, download=True) }}">
+                        <button>Download Chart</button>
+                    </a>
+                {% else %}
+                    <p>Chart will be displayed here.</p>
+                {% endif %}
             </div>
 
         {% else %}

@@ -1,6 +1,8 @@
 """
 Defines the main routes of the application.
 """
+from pathlib import Path
+
 from flask import (
     Response,
     flash,
@@ -9,6 +11,7 @@ from flask import (
     request,
     session,
     url_for,
+    current_app,
 )
 from flask_login import current_user, login_required
 from werkzeug.datastructures import FileStorage
@@ -56,11 +59,14 @@ def dashboard() -> str:
         if active_file:
             columns = get_csv_headers(active_file["server_path"])
 
+    chart_filename = session.get("chart_filename")
+
     return render_template(
         "dashboard.html",
         files=files,
         active_file=active_file,
         columns=columns,
+        chart_filename=chart_filename,
     )
 
 
@@ -116,3 +122,61 @@ def delete_file(file_id: str) -> Response:
         flash("Could not delete the file.")
 
     return redirect(url_for("main.dashboard"))
+
+
+@main_bp.route("/generate_chart", methods=["POST"])
+@login_required
+def generate_chart() -> Response:
+    """
+    Generates a chart based on user selections and stores it in the session.
+    """
+    file_id = request.form.get("file_id")
+    x_axis = request.form.get("x_axis")
+    y_axis = request.form.get("y_axis")
+    chart_type = request.form.get("chart_type")
+
+    if not all([file_id, x_axis, y_axis, chart_type]):
+        flash("Missing required parameters for chart generation.")
+        return redirect(url_for("main.dashboard"))
+
+    files = session.get("files", [])
+    active_file = next((f for f in files if f["id"] == file_id), None)
+
+    if not active_file:
+        flash("Selected file not found.")
+        return redirect(url_for("main.dashboard"))
+
+    from app.services.chart_service import create_chart
+    from app.services.logging_service import log_event
+
+    chart_filename = create_chart(
+        active_file["server_path"], x_axis, y_axis, chart_type
+    )
+
+    if chart_filename:
+        session["chart_filename"] = chart_filename
+        log_event("chart_generated")
+        flash("Chart generated successfully.")
+    else:
+        flash("Could not generate the chart.")
+
+    return redirect(url_for("main.dashboard", file_id=file_id))
+
+
+@main_bp.route("/charts/<string:filename>")
+@login_required
+def get_chart(filename: str) -> Response:
+    """
+    Serves a generated chart image.
+    """
+    from flask import send_from_directory
+
+    charts_dir = Path(current_app.instance_path) / "charts"
+    if request.args.get("download"):
+        from app.services.logging_service import log_event
+
+        log_event("chart_downloaded")
+        return send_from_directory(
+            charts_dir, filename, as_attachment=True
+        )
+    return send_from_directory(charts_dir, filename)
