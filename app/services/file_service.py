@@ -37,7 +37,8 @@ def get_session_dir() -> Path:
 
 def clear_session_dir() -> None:
     """
-    Deletes the user's session directory and all its contents.
+    Deletes the user's session directory and all its contents, including
+    generated charts.
     """
     if "session_dir_id" in session:
         session_dir_id = session["session_dir_id"]
@@ -45,8 +46,19 @@ def clear_session_dir() -> None:
         if os.path.isdir(session_dir):
             shutil.rmtree(session_dir)
 
+    # Clean up generated charts
+    if "chart_filename" in session:
+        charts_dir = Path(current_app.instance_path) / "charts"
+        chart_path = charts_dir / session["chart_filename"]
+        if chart_path.exists():
+            try:
+                os.remove(chart_path)
+            except OSError:
+                pass
+
     session.pop("session_dir_id", None)
     session.pop("files", None)
+    session.pop("chart_filename", None)
 
 
 def is_valid_csv(file_stream: Any) -> bool:

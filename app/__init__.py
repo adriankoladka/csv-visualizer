@@ -62,4 +62,10 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     with app.app_context():
         setup_event_logger()
 
+    # Run cleanup on startup
+    from app.services.cleanup_service import cleanup_expired_sessions
+
+    with app.app_context():
+        cleanup_expired_sessions()
+
     return app

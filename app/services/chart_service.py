@@ -13,7 +13,7 @@ from flask import current_app
 
 def create_chart(
     file_path: str, x_axis: str, y_axis: str, chart_type: str
-) -> str | None:
+) -> tuple[str | None, str | None]:
     """
     Generates a chart from a CSV file and saves it as a PNG image.
 
@@ -25,36 +25,52 @@ def create_chart(
                           'scatter').
 
     Returns:
-        str | None: The filename of the generated chart, or None on failure.
+        tuple[str | None, str | None]: A tuple of (filename, error_message).
+            Returns (filename, None) on success, (None, error_message) on failure.
     """
     try:
         df = pd.read_csv(file_path)
 
+        # Check if file is empty
+        if df.empty:
+            return None, "The CSV file is empty."
+
         # Ensure the selected columns exist
-        if x_axis not in df.columns or y_axis not in df.columns:
-            return None
+        if x_axis not in df.columns:
+            return None, f"Column '{x_axis}' not found in the CSV file."
+        if y_axis not in df.columns:
+            return None, f"Column '{y_axis}' not found in the CSV file."
+
+        # Check if Y-axis contains numeric data
+        if not pd.api.types.is_numeric_dtype(df[y_axis]):
+            return None, f"Column '{y_axis}' must contain numeric data for charting."
+
+        # Remove rows with NaN values in selected columns
+        df_clean = df[[x_axis, y_axis]].dropna()
+        if df_clean.empty:
+            return None, "No valid data found after removing missing values."
 
         plt.figure(figsize=(10, 6))
 
         # Highlight the max value
-        max_val_index = df[y_axis].idxmax()
-        colors = ["grey"] * len(df)
-        colors[max_val_index] = "red"
+        max_val_index = df_clean[y_axis].idxmax()
+        colors = ["grey"] * len(df_clean)
+        colors[list(df_clean.index).index(max_val_index)] = "red"
 
         if chart_type == "bar":
-            plt.bar(df[x_axis], df[y_axis], color=colors)
+            plt.bar(df_clean[x_axis], df_clean[y_axis], color=colors)
         elif chart_type == "line":
-            plt.plot(df[x_axis], df[y_axis], color="grey")
+            plt.plot(df_clean[x_axis], df_clean[y_axis], color="grey")
             plt.scatter(
-                df[x_axis][max_val_index],
-                df[y_axis][max_val_index],
+                df_clean[x_axis].iloc[list(df_clean.index).index(max_val_index)],
+                df_clean[y_axis].iloc[list(df_clean.index).index(max_val_index)],
                 color="red",
                 zorder=5,
             )
         elif chart_type == "scatter":
-            plt.scatter(df[x_axis], df[y_axis], color=colors)
+            plt.scatter(df_clean[x_axis], df_clean[y_axis], color=colors)
         else:
-            return None
+            return None, f"Invalid chart type: {chart_type}"
 
         plt.xlabel(x_axis)
         plt.ylabel(y_axis)
@@ -70,6 +86,10 @@ def create_chart(
         plt.savefig(chart_path)
         plt.close()
 
-        return chart_filename
-    except Exception:
-        return None
+        return chart_filename, None
+    except pd.errors.EmptyDataError:
+        return None, "The CSV file is empty or invalid."
+    except ValueError as e:
+        return None, f"Data error: {str(e)}"
+    except Exception as e:
+        return None, f"Could not generate chart: {str(e)}"

@@ -122,7 +122,15 @@ def delete_file(file_id: str) -> Response:
     """
     Deletes a file from the user's session.
     """
+    # Check if we're deleting the currently active file
+    active_file_id = request.args.get("file_id") or (
+        session.get("files", [])[0]["id"] if session.get("files") else None
+    )
+
     if remove_file_from_session(file_id):
+        # Clear chart if we deleted the active file
+        if file_id == active_file_id:
+            session.pop("chart_filename", None)
         flash("File deleted successfully.")
     else:
         flash("Could not delete the file.")
@@ -197,7 +205,7 @@ def generate_chart() -> Response:
     from app.services.chart_service import create_chart
     from app.services.logging_service import log_event
 
-    chart_filename = create_chart(
+    chart_filename, error_message = create_chart(
         active_file["server_path"], x_axis, y_axis, chart_type
     )
 
@@ -206,7 +214,7 @@ def generate_chart() -> Response:
         log_event("chart_generated")
         flash("Chart generated successfully.")
     else:
-        flash("Could not generate the chart.")
+        flash(error_message or "Could not generate the chart.")
 
     return redirect(url_for("main.dashboard", file_id=file_id))
 
