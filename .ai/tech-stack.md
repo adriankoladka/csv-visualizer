@@ -1,16 +1,16 @@
-## Web Framework: 
+## Web Framework
 Flask
 
-## Data Handling: 
+## Data Handling
 Pandas
 
-## Data Visualization: 
+## Data Visualization
 Matplotlib
 
-## User Authentication: 
+## User Authentication
 Flask-Login
 
-## Frontend Templating: 
+## Frontend Templating
 Jinja2
 
 ## CI/CD

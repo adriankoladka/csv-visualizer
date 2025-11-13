@@ -52,7 +52,7 @@ A limit of **5 files per session uploaded sequentially** will be enforced at the
 
 ### Data Management Routes
 
-All data management logic will be handled by view functions, likely within the `main` blueprint, to ensure modularity. These view functions will be responsible for handling form submissions for file uploads, deletions, and updates.
+All data management logic will be handled by view functions within the `main` blueprint, to ensure modularity. These view functions will be responsible for handling form submissions for file uploads, deletions, and updates.
 
 ### Helper Functions
 
