@@ -1,6 +1,7 @@
 """
 Handles logging of business events.
 """
+
 import json
 import logging
 from logging.handlers import RotatingFileHandler
@@ -19,9 +20,7 @@ def setup_event_logger() -> None:
     # Ensure the directory exists
     log_dir.mkdir(exist_ok=True)
 
-    handler = RotatingFileHandler(
-        log_file, maxBytes=1024 * 1024, backupCount=5
-    )
+    handler = RotatingFileHandler(log_file, maxBytes=1024 * 1024, backupCount=5)
     formatter = logging.Formatter(
         '{"timestamp": "%(asctime)s", "event_type": "%(message)s"}'
     )

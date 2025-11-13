@@ -1,6 +1,7 @@
 """
 Defines the main routes of the application.
 """
+
 from pathlib import Path
 
 from flask import (
@@ -23,6 +24,7 @@ from app.services.file_service import (
     get_csv_headers,
     is_valid_csv,
     remove_file_from_session,
+    update_file_in_session,
 )
 
 
@@ -53,9 +55,7 @@ def dashboard() -> str:
         active_file_id = files[0]["id"]
 
     if active_file_id:
-        active_file = next(
-            (f for f in files if f["id"] == active_file_id), None
-        )
+        active_file = next((f for f in files if f["id"] == active_file_id), None)
         if active_file:
             columns = get_csv_headers(active_file["server_path"])
 
@@ -90,10 +90,16 @@ def upload_file() -> Response:
         flash("Invalid file type. Please upload a CSV file.")
         return redirect(url_for("main.dashboard"))
 
+    # Check file size (1MB = 1048576 bytes)
+    file.seek(0, 2)  # Seek to end of file
+    file_size = file.tell()
+    file.seek(0)  # Reset to beginning
+    if file_size > 1048576:
+        flash("File size exceeds 1MB limit.")
+        return redirect(url_for("main.dashboard"))
+
     if not is_valid_csv(file):
-        flash(
-            "Invalid CSV file. Ensure it is UTF-8 encoded and has a header row."
-        )
+        flash("Invalid CSV file. Ensure it is UTF-8 encoded and has a header row.")
         return redirect(url_for("main.dashboard"))
 
     files = session.get("files", [])
@@ -121,6 +127,48 @@ def delete_file(file_id: str) -> Response:
     else:
         flash("Could not delete the file.")
 
+    return redirect(url_for("main.dashboard"))
+
+
+@main_bp.route("/update_file/<string:file_id>", methods=["POST"])
+@login_required
+def update_file(file_id: str) -> Response:
+    """
+    Updates a file in the user's session by replacing it with a new one.
+    """
+    if "csv_file" not in request.files:
+        flash("No file part in the request.")
+        return redirect(url_for("main.dashboard"))
+
+    file: FileStorage = request.files["csv_file"]
+
+    if file.filename == "":
+        flash("No file selected for updating.")
+        return redirect(url_for("main.dashboard"))
+
+    if not file.filename.lower().endswith(".csv"):
+        flash("Invalid file type. Please upload a CSV file.")
+        return redirect(url_for("main.dashboard"))
+
+    # Check file size (1MB = 1048576 bytes)
+    file.seek(0, 2)  # Seek to end of file
+    file_size = file.tell()
+    file.seek(0)  # Reset to beginning
+    if file_size > 1048576:
+        flash("File size exceeds 1MB limit.")
+        return redirect(url_for("main.dashboard"))
+
+    if not is_valid_csv(file):
+        flash("Invalid CSV file. Ensure it is UTF-8 encoded and has a header row.")
+        return redirect(url_for("main.dashboard"))
+
+    from app.services.file_service import update_file_in_session
+
+    if update_file_in_session(file_id, file):
+        flash("File updated successfully.")
+        return redirect(url_for("main.dashboard", file_id=file_id))
+
+    flash("Could not update the file.")
     return redirect(url_for("main.dashboard"))
 
 
@@ -176,7 +224,5 @@ def get_chart(filename: str) -> Response:
         from app.services.logging_service import log_event
 
         log_event("chart_downloaded")
-        return send_from_directory(
-            charts_dir, filename, as_attachment=True
-        )
+        return send_from_directory(charts_dir, filename, as_attachment=True)
     return send_from_directory(charts_dir, filename)

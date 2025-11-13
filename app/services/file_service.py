@@ -1,6 +1,7 @@
 """
 Contains the business logic for file management.
 """
+
 import os
 import shutil
 import uuid
@@ -29,9 +30,7 @@ def get_session_dir() -> Path:
 
     session_dir_id = session["session_dir_id"]
     # The `uploads` directory is created within the instance folder
-    session_dir = (
-        Path(current_app.instance_path) / "uploads" / str(session_dir_id)
-    )
+    session_dir = Path(current_app.instance_path) / "uploads" / str(session_dir_id)
     os.makedirs(session_dir, exist_ok=True)
     return session_dir
 
@@ -42,9 +41,7 @@ def clear_session_dir() -> None:
     """
     if "session_dir_id" in session:
         session_dir_id = session["session_dir_id"]
-        session_dir = (
-            Path(current_app.instance_path) / "uploads" / str(session_dir_id)
-        )
+        session_dir = Path(current_app.instance_path) / "uploads" / str(session_dir_id)
         if os.path.isdir(session_dir):
             shutil.rmtree(session_dir)
 
@@ -123,9 +120,7 @@ def remove_file_from_session(file_id: str) -> bool:
     if "files" not in session:
         return False
 
-    file_to_remove = next(
-        (f for f in session["files"] if f["id"] == file_id), None
-    )
+    file_to_remove = next((f for f in session["files"] if f["id"] == file_id), None)
 
     if not file_to_remove:
         return False
@@ -138,6 +133,44 @@ def remove_file_from_session(file_id: str) -> bool:
         pass
 
     session["files"] = [f for f in session["files"] if f["id"] != file_id]
+    session.modified = True
+    return True
+
+
+def update_file_in_session(file_id: str, new_file: FileStorage) -> bool:
+    """
+    Replaces an existing file in the session with a new one.
+
+    Args:
+        file_id (str): The ID of the file to update.
+        new_file (FileStorage): The new file to replace the old one.
+
+    Returns:
+        bool: True if the file was updated successfully, False otherwise.
+    """
+    if "files" not in session:
+        return False
+
+    file_to_update = next((f for f in session["files"] if f["id"] == file_id), None)
+
+    if not file_to_update:
+        return False
+
+    # Delete the old file
+    try:
+        os.remove(file_to_update["server_path"])
+    except OSError:
+        pass
+
+    # Save the new file
+    filename = secure_filename(new_file.filename or f"file_{uuid.uuid4().hex}.csv")
+    session_dir = get_session_dir()
+    file_path = session_dir / filename
+    new_file.save(file_path)
+
+    # Update metadata
+    file_to_update["original_filename"] = filename
+    file_to_update["server_path"] = str(file_path)
     session.modified = True
     return True
 

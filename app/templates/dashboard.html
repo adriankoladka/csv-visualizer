@@ -58,9 +58,15 @@
                 {% for file in files %}
                     <li class="file-list-item {% if active_file and active_file.id == file.id %}active{% endif %}">
                         <a href="{{ url_for('main.dashboard', file_id=file.id) }}">{{ file.original_filename }}</a>
-                        <form action="{{ url_for('main.delete_file', file_id=file.id) }}" method="post" style="display: inline;">
-                            <button type="submit">Delete</button>
-                        </form>
+                        <div style="display: inline;">
+                            <form action="{{ url_for('main.update_file', file_id=file.id) }}" method="post" enctype="multipart/form-data" style="display: inline;" id="update_form_{{ file.id }}">
+                                <input type="file" name="csv_file" accept=".csv" required style="display: none;" id="update_{{ file.id }}" onchange="document.getElementById('update_form_{{ file.id }}').submit()">
+                                <button type="button" onclick="document.getElementById('update_{{ file.id }}').click()">Update</button>
+                            </form>
+                            <form action="{{ url_for('main.delete_file', file_id=file.id) }}" method="post" style="display: inline;">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
@@ -74,20 +80,20 @@
         
         {% if active_file %}
             <!-- Chart Configuration Form -->
-            <form action="{{ url_for('main.generate_chart') }}" method="post">
+            <form action="{{ url_for('main.generate_chart') }}" method="post" id="chartForm">
                 <input type="hidden" name="file_id" value="{{ active_file.id }}">
                 
                 <label for="x_axis">X-Axis:</label>
                 <select name="x_axis" id="x_axis" required>
                     {% for column in columns %}
-                        <option value="{{ column }}">{{ column }}</option>
+                        <option value="{{ column }}" {% if loop.index == 1 %}selected{% endif %}>{{ column }}</option>
                     {% endfor %}
                 </select>
                 
                 <label for="y_axis">Y-Axis:</label>
                 <select name="y_axis" id="y_axis" required>
                     {% for column in columns %}
-                        <option value="{{ column }}">{{ column }}</option>
+                        <option value="{{ column }}" {% if loop.index == 2 %}selected{% endif %}>{{ column }}</option>
                     {% endfor %}
                 </select>
                 
@@ -98,15 +104,23 @@
                     <option value="scatter">Scatter</option>
                 </select>
                 
-                <button type="submit">Generate Chart</button>
+                <button type="submit" id="generateBtn">Generate Chart</button>
+                <span id="loadingMsg" style="display: none; margin-left: 10px;">Generating chart...</span>
             </form>
+
+            <script>
+                document.getElementById('chartForm').addEventListener('submit', function() {
+                    document.getElementById('generateBtn').disabled = true;
+                    document.getElementById('loadingMsg').style.display = 'inline';
+                });
+            </script>
 
             <!-- Chart Display Area -->
             <div class="chart-display">
-                {% if session.chart_filename %}
-                    <img src="{{ url_for('main.get_chart', filename=session.chart_filename) }}" alt="Generated Chart">
+                {% if chart_filename %}
+                    <img src="{{ url_for('main.get_chart', filename=chart_filename) }}" alt="Generated Chart">
                     <br>
-                    <a href="{{ url_for('main.get_chart', filename=session.chart_filename, download=True) }}">
+                    <a href="{{ url_for('main.get_chart', filename=chart_filename, download=True) }}">
                         <button>Download Chart</button>
                     </a>
                 {% else %}

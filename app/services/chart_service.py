@@ -1,6 +1,7 @@
 """
 Contains the business logic for chart generation.
 """
+
 import os
 from pathlib import Path
 from typing import Any, Dict, List
