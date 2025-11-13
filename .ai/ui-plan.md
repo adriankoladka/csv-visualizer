@@ -65,7 +65,7 @@ The core user experience is centered on a single-page dashboard that provides ac
     -   **Chart Display Area**: An `<img>` tag that displays the generated chart by linking to its URL (e.g., `/charts/<chart_filename>`).
     -   **Download Button**: A link pointing to the chart download route (e.g., `/charts/<chart_filename>?download=true`).
 -   **UX and Security Considerations**:
-    -   **UX**: The two-column layout keeps file management and chart configuration visible simultaneously. Using URL query parameters to manage the selected file state allows for bookmarking and predictable reloads. A loading indicator will provide feedback during chart generation.
+    -   **UX**: The two-column layout keeps file management and chart configuration visible simultaneously. Using URL query parameters to manage the selected file state allows for bookmarking and predictable reloads. A loading indicator (e.g., 'Generating...') will be displayed using embedded JavaScript after the user clicks 'Generate Chart'. If the currently active file is deleted, the chart configuration area will be cleared, and the view will default to the next available file or the initial empty state. Upon file selection, the X and Y-axis dropdowns will default to the first and second columns, respectively.
     -   **Security**: All actions are protected by the backend's session management. The UI provides the interface for submitting forms to authenticated routes.
 
 ## 3. User Journey Map

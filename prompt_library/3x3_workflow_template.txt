@@ -1,0 +1,12 @@
+Your task is to implement {{feature}} based on the context added to the conversation.
+First, carefully review the context.
+Second, carefully review the project structure and existing code. 
+This means that you must inspect every file you can find in the project which is relevant for implementation of {{feature}}
+Pay special attention to .py files.
+Do not assume upfront that a file is incomplete or that it acts as a placeholder - this is not always the case.
+Third, start implementation, following the approach defined below.
+
+<implementation_approach>
+Plan a maximum of 3 steps and briefly summarize them for me. At this point, wait for my feedback and do not take any action. If more context is required, ask for it.
+After receiving my feedback, execute the planned steps and repeat the cycle.
+</implementation_approach>

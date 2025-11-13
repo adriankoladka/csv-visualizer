@@ -56,4 +56,16 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
 
     app.register_blueprint(main_bp)
 
+    # Setup event logger
+    from app.services.logging_service import setup_event_logger
+
+    with app.app_context():
+        setup_event_logger()
+
+    # Run cleanup on startup
+    from app.services.cleanup_service import cleanup_expired_sessions
+
+    with app.app_context():
+        cleanup_expired_sessions()
+
     return app

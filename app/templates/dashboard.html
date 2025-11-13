@@ -1,38 +1,143 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- File List Column -->
-        <div class="col-md-6">
-            <h2>Uploaded CSV Files</h2>
-            {% if files %}
-                <ul class="list-group">
-                    {% for file_id, file_data in files.items() %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ file_data.filename }}
-                            <form action="{{ url_for('main.delete_file', file_id=file_id) }}" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No files uploaded yet. Use the form on the right to upload your first CSV file.</p>
-            {% endif %}
-        </div>
+<style>
+    .dashboard-container {
+        display: flex;
+        height: calc(100vh - 80px);
+    }
+    .left-column, .right-column {
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .left-column {
+        width: 40%;
+        border-right: 1px solid #ccc;
+        overflow-y: auto;
+    }
+    .right-column {
+        width: 60%;
+        overflow-y: auto;
+    }
+    .file-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .file-list-item.active {
+        background-color: #e0e0e0;
+    }
+    .chart-display {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .chart-display img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
 
-        <!-- File Upload Column -->
-        <div class="col-md-6">
-            <h2>Upload New CSV</h2>
-            <form action="{{ url_for('main.upload_file') }}" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="file">Choose CSV file</label>
-                    <input type="file" class="form-control-file" id="file" name="file" accept=".csv" required>
-                </div>
-                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+<div class="dashboard-container">
+    <div class="left-column">
+        <h2>Data Management</h2>
+        
+        <!-- File Upload Form -->
+        <p><strong>File Requirements:</strong></p>
+        <ul style="font-size: 0.9em; margin-top: 0;">
+            <li>Maximum file size: 1MB</li>
+            <li>Format: CSV (comma-separated)</li>
+            <li>Encoding: UTF-8</li>
+            <li>Headers must be in the first row</li>
+        </ul>
+        <form action="{{ url_for('main.upload_file') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="csv_file" accept=".csv" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <hr>
+
+        <!-- Session File List -->
+        <h4>Uploaded Files</h4>
+        {% if files %}
+            <ul>
+                {% for file in files %}
+                    <li class="file-list-item {% if active_file and active_file.id == file.id %}active{% endif %}">
+                        <a href="{{ url_for('main.dashboard', file_id=file.id) }}">{{ file.original_filename }}</a>
+                        <div style="display: inline;">
+                            <form action="{{ url_for('main.update_file', file_id=file.id) }}" method="post" enctype="multipart/form-data" style="display: inline;" id="update_form_{{ file.id }}">
+                                <input type="file" name="csv_file" accept=".csv" required style="display: none;" id="update_{{ file.id }}" onchange="document.getElementById('update_form_{{ file.id }}').submit()">
+                                <button type="button" onclick="document.getElementById('update_{{ file.id }}').click()">Update</button>
+                            </form>
+                            <form action="{{ url_for('main.delete_file', file_id=file.id) }}" method="post" style="display: inline;">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No files uploaded yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="right-column">
+        <h2>Charting</h2>
+        
+        {% if active_file %}
+            <!-- Chart Configuration Form -->
+            <form action="{{ url_for('main.generate_chart') }}" method="post" id="chartForm">
+                <input type="hidden" name="file_id" value="{{ active_file.id }}">
+                
+                <label for="x_axis">X-Axis:</label>
+                <select name="x_axis" id="x_axis" required>
+                    {% for column in columns %}
+                        <option value="{{ column }}" {% if loop.index == 1 %}selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="y_axis">Y-Axis:</label>
+                <select name="y_axis" id="y_axis" required>
+                    {% for column in columns %}
+                        <option value="{{ column }}" {% if loop.index == 2 %}selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="chart_type">Chart Type:</label>
+                <select name="chart_type" id="chart_type" required>
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                    <option value="scatter">Scatter</option>
+                </select>
+                
+                <button type="submit" id="generateBtn">Generate Chart</button>
+                <span id="loadingMsg" style="display: none; margin-left: 10px;">Generating chart...</span>
             </form>
-        </div>
+
+            <script>
+                document.getElementById('chartForm').addEventListener('submit', function() {
+                    document.getElementById('generateBtn').disabled = true;
+                    document.getElementById('loadingMsg').style.display = 'inline';
+                });
+            </script>
+
+            <!-- Chart Display Area -->
+            <div class="chart-display">
+                {% if chart_filename %}
+                    <img src="{{ url_for('main.get_chart', filename=chart_filename) }}" alt="Generated Chart">
+                    <br>
+                    <a href="{{ url_for('main.get_chart', filename=chart_filename, download=True) }}">
+                        <button>Download Chart</button>
+                    </a>
+                {% else %}
+                    <p>Chart will be displayed here.</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <p>Select a file to configure a chart.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

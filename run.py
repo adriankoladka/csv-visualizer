@@ -1,6 +1,7 @@
 """
 This script runs the CsvVisualizer web application.
 """
+
 from app import create_app
 
 app = create_app()
