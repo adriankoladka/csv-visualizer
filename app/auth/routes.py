@@ -7,6 +7,7 @@ from flask_login import login_required, login_user, logout_user
 
 from app.auth import auth_bp
 from app.auth.services import authenticate_user
+from app.services.file_service import clear_session_dir
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -40,6 +41,7 @@ def logout() -> Response:
     """
     Logs out the current user and ends the session.
     """
+    clear_session_dir()
     logout_user()
     flash("You have been successfully logged out.")
     return redirect(url_for("auth.login"))
