@@ -1,6 +1,6 @@
 Your task is to implement {{feature}} based on the context added to the conversation.
 First, carefully review the context.
-Second, carefully review the project structure and existing code.
+Second, carefully review the project structure and existing code. Pay special attention to the content of app directory in the project root.
 Third, start implementation, following the approach defined below.
 
 <implementation_approach>
