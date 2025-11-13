@@ -129,6 +129,7 @@ Returns:
 - Use Jinja2 control structures like {% if %} to dynamically generate content.
 
 ### JAVASCRIPT
+
 - Use minimal, embedded JavaScript directly within Jinja2 templates for simple UX enhancements (e.g., showing a 'loading' message). Do not create separate .js files or introduce a frontend build process to maintain simplicity.
 
 ## CI/CD
