@@ -2,8 +2,9 @@
 Defines the routes for authentication.
 """
 
-from flask import Response, flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
+from werkzeug.wrappers.response import Response
 
 from app.auth import auth_bp
 from app.auth.services import authenticate_user

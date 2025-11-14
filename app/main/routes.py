@@ -5,7 +5,6 @@ Defines the main routes of the application.
 from pathlib import Path
 
 from flask import (
-    Response,
     flash,
     redirect,
     render_template,
@@ -16,6 +15,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from werkzeug.datastructures import FileStorage
+from werkzeug.wrappers.response import Response
 
 from app.main import main_bp
 from app.services.file_service import (
@@ -87,7 +87,7 @@ def upload_file() -> Response:
         flash("No file selected for uploading.")
         return redirect(url_for("main.dashboard"))
 
-    if not file.filename.lower().endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         flash("Invalid file type. Please upload a CSV file.")
         return redirect(url_for("main.dashboard"))
 
@@ -213,6 +213,11 @@ def generate_chart() -> Response:
 
     from app.services.chart_service import create_chart
     from app.services.logging_service import log_event
+
+    # Type guards to satisfy mypy
+    assert x_axis is not None
+    assert y_axis is not None
+    assert chart_type is not None
 
     chart_filename, error_message = create_chart(
         active_file["server_path"], x_axis, y_axis, chart_type
