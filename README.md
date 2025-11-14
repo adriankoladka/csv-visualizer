@@ -121,4 +121,5 @@ This project is currently in the development phase as an MVP.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://opensource.org/licenses/MIT) file for details.
+This project is licensed under the MIT License. 
+See the [LICENSE](https://opensource.org/licenses/MIT) file for details.
