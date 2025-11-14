@@ -108,10 +108,7 @@ def upload_file() -> Response:
 
     files = session.get("files", [])
     if len(files) >= MAX_FILES_PER_SESSION:
-        flash(
-            f"You can only upload up to "
-            f"{MAX_FILES_PER_SESSION} files."
-        )
+        flash(f"You can only upload up to " f"{MAX_FILES_PER_SESSION} files.")
         return redirect(url_for("main.dashboard"))
 
     new_file = add_file_to_session(file)

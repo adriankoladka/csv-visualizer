@@ -147,8 +147,8 @@ def get_chart_filename_from_dashboard(client):
         # Look for chart URL in img src or download link
         # Pattern: /charts/<filename>.png or url_for result
         patterns = [
-            rb'/charts/([^"'?\s]+\.png)',
-            rb'filename=([^"'?\s]+\.png)',
+            rb'/charts/([^"\'?\s]+\.png)',
+            rb'filename=([^"\'?\s]+\.png)',
             rb'src="[^"]*?/charts/([^"]+\.png)"',
         ]
 
