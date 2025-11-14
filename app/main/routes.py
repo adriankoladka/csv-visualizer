@@ -158,7 +158,7 @@ def update_file(file_id: str) -> Response:
         flash("No file selected for updating.")
         return redirect(url_for("main.dashboard"))
 
-    if not file.filename.lower().endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         flash("Invalid file type. Please upload a CSV file.")
         return redirect(url_for("main.dashboard"))
 
