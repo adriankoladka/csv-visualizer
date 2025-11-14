@@ -120,15 +120,11 @@ def get_file_id_from_session(client):
     Returns:
         str: The file ID of the first uploaded file, or None if no files exist.
     """
-    with client.application.test_request_context():
-        from flask import session
-
-        client.get("/dashboard")  # Trigger session loading
-        with client.session_transaction() as sess:
-            files = sess.get("files", [])
-            if files:
-                return files[0]["id"]
-            return None
+    with client.session_transaction() as sess:
+        files = sess.get("files", [])
+        if files:
+            return files[0]["id"]
+        return None
 
 
 def get_chart_filename_from_dashboard(client):
@@ -146,8 +142,15 @@ def get_chart_filename_from_dashboard(client):
     response = client.get("/dashboard")
     if response.status_code == 200:
         # Look for chart URL in img src or download link
-        # Pattern: /charts/<filename>.png
-        match = re.search(rb'/charts/([^"\'?]+\.png)', response.data)
-        if match:
-            return match.group(1).decode("utf-8")
+        # Pattern: /charts/<filename>.png or url_for result
+        patterns = [
+            rb'/charts/([^"\'?\s]+\.png)',  # Standard URL pattern
+            rb'filename=([^"\'?\s]+\.png)',  # Download link pattern
+            rb'src="[^"]*?/charts/([^"]+\.png)"',  # img src pattern
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, response.data)
+            if match:
+                return match.group(1).decode("utf-8")
     return None

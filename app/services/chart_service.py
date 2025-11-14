@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List
 
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend (no Tcl/Tk required)
 import matplotlib.pyplot as plt
 import pandas as pd
 from flask import current_app
