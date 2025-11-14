@@ -27,8 +27,9 @@ def create_chart(
                           'scatter').
 
     Returns:
-        tuple[str | None, str | None]: A tuple of (filename, error_message).
-            Returns (filename, None) on success, (None, error_message) on failure.
+        tuple[str | None, str | None]: A tuple of (filename,
+            error_message). Returns (filename, None) on success,
+            (None, error_message) on failure.
     """
     try:
         df = pd.read_csv(file_path)

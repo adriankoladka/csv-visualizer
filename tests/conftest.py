@@ -138,7 +138,8 @@ def get_chart_filename_from_dashboard(client):
         client: Flask test client with an active session.
 
     Returns:
-        str: The chart filename (e.g., 'sales_data_bar.png'), or None if not found.
+        str: The chart filename (e.g., 'sales_data_bar.png'),
+            or None if not found.
     """
     import re
 
