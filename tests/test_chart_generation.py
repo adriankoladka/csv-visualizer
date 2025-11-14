@@ -4,7 +4,10 @@ Tests for chart generation, display, and download functionality.
 
 import pytest
 
-from conftest import get_chart_filename_from_dashboard, get_file_id_from_session
+from conftest import (
+    get_chart_filename_from_dashboard,
+    get_file_id_from_session,
+)
 
 
 @pytest.mark.chart
@@ -36,7 +39,9 @@ def test_TCG_001_generate_bar_chart(auth_client, sample_csv):
 
     # Step 2: Extract file_id from session
     file_id = get_file_id_from_session(auth_client)
-    assert file_id is not None, "File ID should be present in session after upload"
+    assert (
+        file_id is not None
+    ), "File ID should be present in session after upload"
 
     # Step 3: Generate a bar chart
     chart_response = auth_client.post(
@@ -97,7 +102,10 @@ def test_TCG_002_chart_displayed_in_dashboard(auth_client, sample_csv):
     dashboard_response = auth_client.get("/dashboard")
     assert dashboard_response.status_code == 200
     # Chart image tag should be present
-    assert b"<img" in dashboard_response.data or b"chart" in dashboard_response.data.lower()
+    assert (
+        b"<img" in dashboard_response.data
+        or b"chart" in dashboard_response.data.lower()
+    )
 
 
 @pytest.mark.chart
@@ -136,14 +144,20 @@ def test_TCG_003_download_chart_as_png(auth_client, sample_csv):
 
     # Extract chart filename from dashboard
     chart_filename = get_chart_filename_from_dashboard(auth_client)
-    assert chart_filename is not None, "Chart filename should be found in dashboard HTML"
+    assert (
+        chart_filename is not None
+    ), "Chart filename should be found in dashboard HTML"
 
     # Attempt to download the chart
-    download_response = auth_client.get(f"/charts/{chart_filename}?download=true")
+    download_response = auth_client.get(
+        f"/charts/{chart_filename}?download=true"
+    )
 
     # Verify download response
     assert download_response.status_code == 200
     # Content-Type should be image/png
     assert download_response.content_type == "image/png"
     # Content-Disposition header should indicate attachment
-    assert "attachment" in download_response.headers.get("Content-Disposition", "")
+    assert "attachment" in download_response.headers.get(
+        "Content-Disposition", ""
+    )

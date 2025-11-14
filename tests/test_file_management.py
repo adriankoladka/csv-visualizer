@@ -48,4 +48,6 @@ def test_TFM_001_display_uploaded_files_list(auth_client, sample_csv):
     assert b"inventory.csv" in response.data
 
     # File list header should be present
-    assert b"Uploaded Files" in response.data or b"files" in response.data.lower()
+    assert (
+        b"Uploaded Files" in response.data or b"files" in response.data.lower()
+    )

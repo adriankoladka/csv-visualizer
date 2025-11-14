@@ -24,7 +24,10 @@ def test_TAU_001_login_with_valid_credentials(client):
     # Should redirect to dashboard (200 OK after redirect)
     assert response.status_code == 200
     # Dashboard content should be present
-    assert b"Data Management" in response.data or b"dashboard" in response.data.lower()
+    assert (
+        b"Data Management" in response.data
+        or b"dashboard" in response.data.lower()
+    )
 
 
 @pytest.mark.auth
@@ -46,4 +49,7 @@ def test_TAU_002_login_with_invalid_credentials(client):
     # Should stay on login page
     assert response.status_code == 200
     # Error message should be displayed
-    assert b"Invalid credentials" in response.data or b"error" in response.data.lower()
+    assert (
+        b"Invalid credentials" in response.data
+        or b"error" in response.data.lower()
+    )

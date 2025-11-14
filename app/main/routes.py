@@ -5,7 +5,6 @@ Defines the main routes of the application.
 from pathlib import Path
 
 from flask import (
-    Response,
     flash,
     redirect,
     render_template,
@@ -16,6 +15,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from werkzeug.datastructures import FileStorage
+from werkzeug.wrappers.response import Response
 
 from app.main import main_bp
 from app.services.file_service import (
@@ -24,7 +24,6 @@ from app.services.file_service import (
     get_csv_headers,
     is_valid_csv,
     remove_file_from_session,
-    update_file_in_session,
 )
 
 
@@ -55,7 +54,9 @@ def dashboard() -> str:
         active_file_id = files[0]["id"]
 
     if active_file_id:
-        active_file = next((f for f in files if f["id"] == active_file_id), None)
+        active_file = next(
+            (f for f in files if f["id"] == active_file_id), None
+        )
         if active_file:
             columns = get_csv_headers(active_file["server_path"])
 
@@ -86,7 +87,7 @@ def upload_file() -> Response:
         flash("No file selected for uploading.")
         return redirect(url_for("main.dashboard"))
 
-    if not file.filename.lower().endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         flash("Invalid file type. Please upload a CSV file.")
         return redirect(url_for("main.dashboard"))
 
@@ -99,12 +100,15 @@ def upload_file() -> Response:
         return redirect(url_for("main.dashboard"))
 
     if not is_valid_csv(file):
-        flash("Invalid CSV file. Ensure it is UTF-8 encoded and has a header row.")
+        flash(
+            "Invalid CSV file. Ensure it is UTF-8 encoded and "
+            "has a header row."
+        )
         return redirect(url_for("main.dashboard"))
 
     files = session.get("files", [])
     if len(files) >= MAX_FILES_PER_SESSION:
-        flash(f"You can only upload up to {MAX_FILES_PER_SESSION} files.")
+        flash(f"You can only upload up to " f"{MAX_FILES_PER_SESSION} files.")
         return redirect(url_for("main.dashboard"))
 
     new_file = add_file_to_session(file)
@@ -154,7 +158,7 @@ def update_file(file_id: str) -> Response:
         flash("No file selected for updating.")
         return redirect(url_for("main.dashboard"))
 
-    if not file.filename.lower().endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         flash("Invalid file type. Please upload a CSV file.")
         return redirect(url_for("main.dashboard"))
 
@@ -167,10 +171,15 @@ def update_file(file_id: str) -> Response:
         return redirect(url_for("main.dashboard"))
 
     if not is_valid_csv(file):
-        flash("Invalid CSV file. Ensure it is UTF-8 encoded and has a header row.")
+        flash(
+            "Invalid CSV file. Ensure it is UTF-8 encoded and "
+            "has a header row."
+        )
         return redirect(url_for("main.dashboard"))
 
-    from app.services.file_service import update_file_in_session
+    from app.services.file_service import (
+        update_file_in_session,
+    )
 
     if update_file_in_session(file_id, file):
         flash("File updated successfully.")
@@ -204,6 +213,11 @@ def generate_chart() -> Response:
 
     from app.services.chart_service import create_chart
     from app.services.logging_service import log_event
+
+    # Type guards to satisfy mypy
+    assert x_axis is not None
+    assert y_axis is not None
+    assert chart_type is not None
 
     chart_filename, error_message = create_chart(
         active_file["server_path"], x_axis, y_axis, chart_type
