@@ -148,7 +148,7 @@ def get_chart_filename_from_dashboard(client):
             rb'filename=([^"\'?\s]+\.png)',  # Download link pattern
             rb'src="[^"]*?/charts/([^"]+\.png)"',  # img src pattern
         ]
-        
+
         for pattern in patterns:
             match = re.search(pattern, response.data)
             if match:

@@ -7,7 +7,8 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend (no Tcl/Tk required)
+
+matplotlib.use("Agg")  # Use non-interactive backend (no Tcl/Tk required)
 import matplotlib.pyplot as plt
 import pandas as pd
 from flask import current_app
@@ -45,7 +46,10 @@ def create_chart(
 
         # Check if Y-axis contains numeric data
         if not pd.api.types.is_numeric_dtype(df[y_axis]):
-            return None, f"Column '{y_axis}' must contain numeric data for charting."
+            return (
+                None,
+                f"Column '{y_axis}' must contain numeric data for charting.",
+            )
 
         # Remove rows with NaN values in selected columns
         df_clean = df[[x_axis, y_axis]].dropna()
@@ -64,8 +68,12 @@ def create_chart(
         elif chart_type == "line":
             plt.plot(df_clean[x_axis], df_clean[y_axis], color="grey")
             plt.scatter(
-                df_clean[x_axis].iloc[list(df_clean.index).index(max_val_index)],
-                df_clean[y_axis].iloc[list(df_clean.index).index(max_val_index)],
+                df_clean[x_axis].iloc[
+                    list(df_clean.index).index(max_val_index)
+                ],
+                df_clean[y_axis].iloc[
+                    list(df_clean.index).index(max_val_index)
+                ],
                 color="red",
                 zorder=5,
             )

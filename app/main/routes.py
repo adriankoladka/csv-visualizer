@@ -55,7 +55,9 @@ def dashboard() -> str:
         active_file_id = files[0]["id"]
 
     if active_file_id:
-        active_file = next((f for f in files if f["id"] == active_file_id), None)
+        active_file = next(
+            (f for f in files if f["id"] == active_file_id), None
+        )
         if active_file:
             columns = get_csv_headers(active_file["server_path"])
 
@@ -99,7 +101,9 @@ def upload_file() -> Response:
         return redirect(url_for("main.dashboard"))
 
     if not is_valid_csv(file):
-        flash("Invalid CSV file. Ensure it is UTF-8 encoded and has a header row.")
+        flash(
+            "Invalid CSV file. Ensure it is UTF-8 encoded and has a header row."
+        )
         return redirect(url_for("main.dashboard"))
 
     files = session.get("files", [])
@@ -167,7 +171,9 @@ def update_file(file_id: str) -> Response:
         return redirect(url_for("main.dashboard"))
 
     if not is_valid_csv(file):
-        flash("Invalid CSV file. Ensure it is UTF-8 encoded and has a header row.")
+        flash(
+            "Invalid CSV file. Ensure it is UTF-8 encoded and has a header row."
+        )
         return redirect(url_for("main.dashboard"))
 
     from app.services.file_service import update_file_in_session
