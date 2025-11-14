@@ -24,7 +24,6 @@ from app.services.file_service import (
     get_csv_headers,
     is_valid_csv,
     remove_file_from_session,
-    update_file_in_session,
 )
 
 
@@ -102,13 +101,17 @@ def upload_file() -> Response:
 
     if not is_valid_csv(file):
         flash(
-            "Invalid CSV file. Ensure it is UTF-8 encoded and has a header row."
+            "Invalid CSV file. Ensure it is UTF-8 encoded and "
+            "has a header row."
         )
         return redirect(url_for("main.dashboard"))
 
     files = session.get("files", [])
     if len(files) >= MAX_FILES_PER_SESSION:
-        flash(f"You can only upload up to {MAX_FILES_PER_SESSION} files.")
+        flash(
+            f"You can only upload up to "
+            f"{MAX_FILES_PER_SESSION} files."
+        )
         return redirect(url_for("main.dashboard"))
 
     new_file = add_file_to_session(file)
@@ -172,11 +175,14 @@ def update_file(file_id: str) -> Response:
 
     if not is_valid_csv(file):
         flash(
-            "Invalid CSV file. Ensure it is UTF-8 encoded and has a header row."
+            "Invalid CSV file. Ensure it is UTF-8 encoded and "
+            "has a header row."
         )
         return redirect(url_for("main.dashboard"))
 
-    from app.services.file_service import update_file_in_session
+    from app.services.file_service import (
+        update_file_in_session,
+    )
 
     if update_file_in_session(file_id, file):
         flash("File updated successfully.")

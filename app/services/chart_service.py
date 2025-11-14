@@ -4,14 +4,13 @@ Contains the business logic for chart generation.
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List
 
 import matplotlib
 
-matplotlib.use("Agg")  # Use non-interactive backend (no Tcl/Tk required)
-import matplotlib.pyplot as plt
-import pandas as pd
-from flask import current_app
+matplotlib.use("Agg")  # Use non-interactive backend
+import matplotlib.pyplot as plt  # noqa: E402
+import pandas as pd  # noqa: E402
+from flask import current_app  # noqa: E402
 
 
 def create_chart(
@@ -40,9 +39,15 @@ def create_chart(
 
         # Ensure the selected columns exist
         if x_axis not in df.columns:
-            return None, f"Column '{x_axis}' not found in the CSV file."
+            return (
+                None,
+                f"Column '{x_axis}' not found in the CSV file.",
+            )
         if y_axis not in df.columns:
-            return None, f"Column '{y_axis}' not found in the CSV file."
+            return (
+                None,
+                f"Column '{y_axis}' not found in the CSV file.",
+            )
 
         # Check if Y-axis contains numeric data
         if not pd.api.types.is_numeric_dtype(df[y_axis]):

@@ -5,7 +5,7 @@ Initializes the Flask application and its components.
 import os
 from typing import Type
 
-from flask import Flask, flash, jsonify, redirect, url_for
+from flask import Flask, flash, redirect, url_for
 from flask_login import LoginManager
 
 from config import Config

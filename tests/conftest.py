@@ -88,7 +88,10 @@ def sample_csv():
     Returns:
         BytesIO: In-memory CSV file with headers and numeric data.
     """
-    csv_content = b"Month,Revenue,Units\nJanuary,10000,150\nFebruary,12000,180\nMarch,15000,200\n"
+    csv_content = (
+        b"Month,Revenue,Units\nJanuary,10000,150\n"
+        b"February,12000,180\nMarch,15000,200\n"
+    )
     csv_file = BytesIO(csv_content)
     csv_file.name = "sales_data.csv"
     csv_file.seek(0)
@@ -144,9 +147,9 @@ def get_chart_filename_from_dashboard(client):
         # Look for chart URL in img src or download link
         # Pattern: /charts/<filename>.png or url_for result
         patterns = [
-            rb'/charts/([^"\'?\s]+\.png)',  # Standard URL pattern
-            rb'filename=([^"\'?\s]+\.png)',  # Download link pattern
-            rb'src="[^"]*?/charts/([^"]+\.png)"',  # img src pattern
+            rb'/charts/([^"'?\s]+\.png)',
+            rb'filename=([^"'?\s]+\.png)',
+            rb'src="[^"]*?/charts/([^"]+\.png)"',
         ]
 
         for pattern in patterns:

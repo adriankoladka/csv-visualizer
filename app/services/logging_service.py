@@ -2,7 +2,6 @@
 Handles logging of business events.
 """
 
-import json
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
