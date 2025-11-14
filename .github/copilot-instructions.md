@@ -158,6 +158,8 @@ Returns:
 
 - pytest version used in this project is 8.4.2.
 
+- pytest-html version used in this project is 4.1.1.
+
 - Each test case's name must start with test_.
 
 - Each module containing test cases must be created in CSVVIZ\csv-visualizer\tests.
@@ -165,3 +167,5 @@ Returns:
 - Use fixtures to avoid code duplication and place them in conftest.py file to enable sharing across multiple test modules.
 
 - Use markers to categorize tests.
+
+- Generate HTML test reports using pytest-html plugin with --html and --self-contained-html flags for easy viewing and sharing.
